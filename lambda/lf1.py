@@ -1,4 +1,5 @@
 import json
+from sqs.send import send_to_sqs
 
 def response(dialog_action_type, intent_name, intent_slots=None, message=None, slot_to_elicit=None):
     res = {
@@ -84,8 +85,22 @@ def dining_suggestions_intent_handler(intent_name, intent_slots):
     if email.get('originalValue') and not email.get('interpretedValue'):
         return response('ElicitSlot', intent_name, intent_slots, 'Please enter a valid email.', 'Email')
     
+    # Create data object to send to SQS
+    data = {
+        'Location': location.get('interpretedValue'),
+        'Cuisine': cuisine.get('interpretedValue'),
+        'PartySize': party_size.get('interpretedValue'),
+        'DiningTime': dining_time.get('interpretedValue'),
+        'Email': email.get('interpretedValue')
+    }
 
-    message = "You're all set! Expect restaurant suggestions in your email shortly."
+    # Send data to SQS before fulfillment
+    sqs_response = send_to_sqs(data)
+
+    if sqs_response:
+        message = "You're all set! Expect restaurant suggestions in your email shortly."
+    else:
+        message='Sorry, something went wrong. Please try again later.'
 
     # Final fulfillment
     return response('Close', intent_name, intent_slots, message)
