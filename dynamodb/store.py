@@ -1,15 +1,10 @@
 import decimal
 from datetime import datetime, timezone
 import boto3
-from config.config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, DYNAMODB_TABLE_NAME
+from config.config import DYNAMODB_TABLE_NAME
 
 # Initialize DynamoDB Client
-dynamodb = boto3.resource(
-    'dynamodb',
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    region_name=AWS_REGION
-)
+dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(DYNAMODB_TABLE_NAME)
 
 def store_restaurants(restaurants, cuisine):
