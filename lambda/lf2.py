@@ -14,8 +14,7 @@ def fetch_random_restaurants(cuisine, location, count):
         return None
     
     # Get random restaurants from results
-    random_restaurants = random.sample(restaurants, count)
-    # print('RANDOM RESTAURANTS:', random_restaurants)
+    random_restaurants = random.sample(restaurants, min(len(restaurants), count))
 
     # Fetch and return full data from DynamoDB
     business_ids = [restaurant['_source']['business_id'] for restaurant in random_restaurants]
@@ -40,12 +39,7 @@ def lambda_handler(event, context):
         return
 
     # Fetch restaurant recommendations
-    restaurants = fetch_random_restaurants(cuisine, location, 3)
-
-    if not restaurants:
-        print(f'No {cuisine} restaurants found.')
-        delete_message(message['ReceiptHandle'])
-        return
+    restaurants = fetch_random_restaurants(cuisine, location, 5)
     
     # Send email with restaurant recommendation
     send_email(email, restaurants, cuisine, location)
@@ -56,8 +50,8 @@ def lambda_handler(event, context):
 # Testing
 if __name__ == '__main__':
     data = {
-        'Location': 'Brooklyn',
-        'Cuisine': 'Italian',
+        'Location': 'Queens',
+        'Cuisine': 'Chinese',
         'PartySize': '2',
         'DiningTime': '7:00 PM',
         'Email': SES_RECEIVER_EMAIL
