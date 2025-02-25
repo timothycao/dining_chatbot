@@ -1,5 +1,5 @@
 import json
-from sqs.send import send_to_sqs
+from sqs.manage import send_message
 
 def response(dialog_action_type, intent_name, intent_slots=None, message=None, slot_to_elicit=None):
     res = {
@@ -95,7 +95,7 @@ def dining_suggestions_intent_handler(intent_name, intent_slots):
     }
 
     # Send data to SQS before fulfillment
-    sqs_response = send_to_sqs(data)
+    sqs_response = send_message(data)
 
     if sqs_response:
         message = "You're all set! Expect restaurant suggestions in your email shortly."

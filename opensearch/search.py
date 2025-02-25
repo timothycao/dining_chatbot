@@ -35,9 +35,10 @@ def search_restaurants(cuisine=None, location=None, size=10):
 
     if response.status_code == 200:
         results = response.json().get('hits', {}).get('hits', [])
-        print(f'Found {len(results)} restaurants matching query:')
-        for result in results:
-            print(f"{result['_source']['business_id']} - {result['_source']['cuisine']} - {result['_source']['location']}")
+        return results
+        # print(f'Found {len(results)} restaurants matching query:')
+        # for result in results:
+            # print(f"{result['_source']['business_id']} - {result['_source']['cuisine']} - {result['_source']['location']}")
     else:
         print(f'Error searching: {response.status_code} - {response.text}')
 

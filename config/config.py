@@ -35,3 +35,7 @@ AWS_REGION = os.getenv('AWS_REGION')
 OPENSEARCH_URL = os.getenv('OPENSEARCH_URL')
 OPENSEARCH_HEADERS = {'Content-Type': 'application/json'}
 OPENSEARCH_AUTH = (os.getenv('OPENSEARCH_USERNAME'), os.getenv('OPENSEARCH_PASSWORD'))
+
+# SES
+SES_SENDER_EMAIL = os.getenv('SES_SENDER_EMAIL')
+SES_RECEIVER_EMAIL = os.getenv('SES_RECEIVER_EMAIL')    # for testing
