@@ -5,13 +5,14 @@ from config.config import DYNAMODB_TABLE_NAME
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(DYNAMODB_TABLE_NAME)
 
-def fetch_restaurant(business_id):
+def fetch_restaurants_by_ids(business_ids):
     try:
-        response = table.get_item(Key={'business_id': business_id})
-        return response.get('Item', None)
+        keys = [{'business_id': id} for id in business_ids]
+        response = dynamodb.batch_get_item(RequestItems={DYNAMODB_TABLE_NAME: {'Keys': keys}})
+        return response['Responses'].get(DYNAMODB_TABLE_NAME, [])
     except Exception as e:
-        print(f'Error fetching restaurant {business_id}: {e}')
-        return None
+        print(f'Error fetching restaurants: {e}')
+        return []
 
 def fetch_restaurants(limit=None):
     try:
@@ -28,5 +29,6 @@ def fetch_restaurants(limit=None):
 # Testing
 if __name__ == '__main__':
     # response = fetch_restaurants(limit=5)
-    response = fetch_restaurant('16ZnHpuaaBt92XWeJHCC5A')
+    business_ids = ['3D6UAhoKnF3A03rX_v5ngA', 'EM0JnhfXWwr_Nqw4_AjWAA', 'dEOv8_ivdHp85OK_TDQh_g']
+    response = fetch_restaurants_by_ids(business_ids)
     print(response)

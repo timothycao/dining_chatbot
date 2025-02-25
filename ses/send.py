@@ -5,16 +5,12 @@ from config.config import SES_SENDER_EMAIL
 # Initialize SES Client
 ses_client = boto3.client('ses')
 
-def send_email(recipient_email, restaurant):
+def send_email(recipient_email, restaurants, cuisine, location):
     subject = 'Restaurant Recommendations'
-    body = f"""
-    Hello! Here are my restaurant recommendations:
-
-    Restaurant: {restaurant.get('name', 'N/A')}
-    Address: {restaurant.get('address', 'N/A')}
-
-    Enjoy your meal!
-    """
+    body = f'Hello! Here are my {cuisine} restaurant recommendations in {location}:\n\n'
+    for i, restaurant in enumerate(restaurants):
+        body += f'{i + 1}. {restaurant.get('name', 'N/A')}, located at {restaurant.get('address', 'N/A')}\n'
+    body += '\nEnjoy your meal!'
 
     response = ses_client.send_email(
         Source=SES_SENDER_EMAIL,
